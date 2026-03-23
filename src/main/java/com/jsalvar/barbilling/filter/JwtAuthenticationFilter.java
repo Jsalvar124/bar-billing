@@ -7,19 +7,27 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserService userService;
+    private Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     public JwtAuthenticationFilter(JwtService jwtService, UserService userService) {
         this.jwtService = jwtService;
@@ -39,9 +47,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try{
             // extract username from token
             String username = jwtService.extractUsername(token);
+
             if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null){
                 // Not already authenticated, find user in database
                 UserDetails userDetails = userService.loadUserByUsername(username);
+
+
                 // Validate token
                 if(jwtService.isTokenValid(token, userDetails)){
                     UsernamePasswordAuthenticationToken authToken =
@@ -60,10 +71,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder
                             .getContext()
                             .setAuthentication(authToken);
+
                 }
             }
 
         }catch (JwtException e){
+            logger.error("Jwt error: {}",e.getMessage());
             // Invalid token → ignore, request remains unauthenticated
         }
 

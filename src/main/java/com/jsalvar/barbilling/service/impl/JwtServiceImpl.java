@@ -6,6 +6,8 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @Service
 public class JwtServiceImpl implements JwtService {
+    private final Logger logger = LoggerFactory.getLogger(JwtServiceImpl.class);
     @Value("${jwt.secret}")
     private String secret;
 
@@ -73,6 +76,7 @@ public class JwtServiceImpl implements JwtService {
             return username.equals(userDetails.getUsername());
 
         } catch (JwtException | IllegalArgumentException e) {
+            logger.error("Exception in Jwt Filter,{}",e.getMessage());
             return false;
         }
     }

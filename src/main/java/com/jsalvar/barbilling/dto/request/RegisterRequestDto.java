@@ -1,4 +1,4 @@
-package com.jsalvar.barbilling.dto;
+package com.jsalvar.barbilling.dto.request;
 
 import com.jsalvar.barbilling.entity.Role;
 
