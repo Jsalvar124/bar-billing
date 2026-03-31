@@ -7,6 +7,7 @@ public record UserResponseDto(
         String name,
         String lastname,
         String email,
-        Role role
+        Role role,
+        boolean active
 ) {
 }

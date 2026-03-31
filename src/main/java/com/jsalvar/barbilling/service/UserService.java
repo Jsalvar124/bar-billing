@@ -1,15 +1,21 @@
 package com.jsalvar.barbilling.service;
 
-import com.jsalvar.barbilling.dto.request.LoginRequestDto;
-import com.jsalvar.barbilling.dto.request.RegisterRequestDto;
-import com.jsalvar.barbilling.dto.response.LoginResponseDto;
+import com.jsalvar.barbilling.dto.request.ChangePasswordRequestDto;
+import com.jsalvar.barbilling.dto.request.UserCreateRequestDto;
+import com.jsalvar.barbilling.dto.request.UserUpdateRequestDto;
 import com.jsalvar.barbilling.entity.UserImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
-import java.util.UUID;
 
-public interface UserService extends UserDetailsService{
+public interface UserService extends UserDetailsService {
     List<UserImpl> findAll();
     UserImpl findById(String id);
+    UserImpl findByEmail(String email);
+    boolean existsByEmail(String email);
+    UserImpl create(UserCreateRequestDto dto);
+    UserImpl update(String id, UserUpdateRequestDto dto);
+    void delete(String id);
+    void changePassword(String id, ChangePasswordRequestDto dto);
 }
