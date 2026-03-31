@@ -1,6 +1,6 @@
 package com.jsalvar.barbilling.dto.request;
 
-import com.jsalvar.barbilling.entity.Role;
+import com.jsalvar.barbilling.entity.enums.Role;
 
 public record RegisterRequestDto(
         String name,

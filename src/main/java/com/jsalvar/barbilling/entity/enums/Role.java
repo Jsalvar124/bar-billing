@@ -1,4 +1,4 @@
-package com.jsalvar.barbilling.entity;
+package com.jsalvar.barbilling.entity.enums;
 
 public enum Role {
     ADMIN,
