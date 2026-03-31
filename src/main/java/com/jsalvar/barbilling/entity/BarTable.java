@@ -20,6 +20,6 @@ public class BarTable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "table_status")
-    private TableStatus status;
+    private TableStatus status = TableStatus.AVAILABLE; // default value
 
 }

@@ -5,7 +5,6 @@ import com.jsalvar.barbilling.dto.request.UserCreateRequestDto;
 import com.jsalvar.barbilling.dto.request.UserUpdateRequestDto;
 import com.jsalvar.barbilling.entity.UserImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 

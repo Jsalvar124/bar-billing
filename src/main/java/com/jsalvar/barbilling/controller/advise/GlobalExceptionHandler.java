@@ -2,6 +2,7 @@ package com.jsalvar.barbilling.controller.advise;
 
 import com.jsalvar.barbilling.dto.response.ErrorResponseDto;
 import com.jsalvar.barbilling.exception.UnprocessableEntityException;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, status);
     }
 
+
     @ExceptionHandler(UnprocessableEntityException.class)
     public ResponseEntity<ErrorResponseDto> handleUnprocessableEntity(UnprocessableEntityException ex) {
         return buildResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY, ex);
@@ -46,6 +48,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleUsernameNotFound(UsernameNotFoundException ex) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleEntityNotFound(EntityNotFoundException ex) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex);
     }
 }
