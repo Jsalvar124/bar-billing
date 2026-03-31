@@ -4,4 +4,8 @@ public record ChangePasswordRequestDto(
         String oldPassword,
         String newPassword
 ) {
+    @Override
+    public String toString() {
+        return "ChangePasswordRequestDto[oldPassword=***, newPassword=***]";
+    }
 }

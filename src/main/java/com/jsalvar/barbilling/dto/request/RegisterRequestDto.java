@@ -9,4 +9,14 @@ public record RegisterRequestDto(
         String password,
         Role role // "ADMIN", "CASHIER", "WAITER"
 ) {
+    @Override
+    public String toString() {
+        return "UserCreateRequestDto{" +
+                "name='" + name + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", password=***'" + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }
