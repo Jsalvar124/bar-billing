@@ -34,8 +34,10 @@ public class AuthController {
         return ResponseEntity.created(location).body("Successful registration, id: " + id);
     }
 
+    @Loggable
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto){
+        System.out.println("INSIDE LOGIN");
         LoginResponseDto response = authService.login(requestDto);
          return ResponseEntity.ok().body(response);
     }
