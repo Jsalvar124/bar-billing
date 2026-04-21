@@ -4,6 +4,7 @@ import com.jsalvar.barbilling.entity.enums.Role;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Data;
+import org.hibernate.annotations.SQLRestriction;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,8 +14,9 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
 @Data
+@Table(name = "users")
+@SQLRestriction("active = true")
 public class UserImpl implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
