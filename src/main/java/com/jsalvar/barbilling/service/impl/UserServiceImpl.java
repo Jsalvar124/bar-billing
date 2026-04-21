@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    // Soft delete
     @Override
     @Transactional
     public void delete(String id) {

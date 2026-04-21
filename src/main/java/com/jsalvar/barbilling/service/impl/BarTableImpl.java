@@ -93,10 +93,15 @@ public class BarTableImpl implements BarTableService {
         return barTableRepository.save(barTable);
     }
 
+    // Soft delete
     @Override
     @Transactional
     public void delete(String id) {
         BarTable barTable = findById(id);
-        barTableRepository.delete(barTable);
+        if (!barTable.getStatus().equals(TableStatus.AVAILABLE)) {
+            throw new UnprocessableEntityException("Error deleting table, it must be available before deleting");
+        }
+        barTable.setActive(false);
+        barTableRepository.save(barTable);
     }
 }

@@ -2,10 +2,9 @@ package com.jsalvar.barbilling.controller;
 
 import com.jsalvar.barbilling.aspect.Loggable;
 import com.jsalvar.barbilling.dto.request.BarTableCreateRequestDto;
+import com.jsalvar.barbilling.dto.request.BarTableUpdateRequestDto;
 import com.jsalvar.barbilling.dto.response.BarTableResponseDto;
-import com.jsalvar.barbilling.dto.response.UserResponseDto;
 import com.jsalvar.barbilling.entity.BarTable;
-import com.jsalvar.barbilling.entity.UserImpl;
 import com.jsalvar.barbilling.service.BarTableService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +72,26 @@ public class BarTableController {
         return ResponseEntity.status(HttpStatus.CREATED).body(toDto(barTable));
     }
 
+    @Loggable
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BarTableResponseDto> update(
+            @PathVariable String id,
+            @RequestBody BarTableUpdateRequestDto dto){
+        BarTable barTable = barTableService.update(id, dto);
+        return ResponseEntity.ok().body(toDto(barTable));
+    }
+
+    @Loggable
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable String id){
+        barTableService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
     private BarTableResponseDto toDto(BarTable barTable){
         return new BarTableResponseDto(
                 barTable.getId(), // UUID from database
@@ -81,8 +100,4 @@ public class BarTableController {
                 barTable.getStatus() // Default constructor value is AVAILABLE
         );
     }
-
-
-
-
 }

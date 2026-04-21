@@ -3,10 +3,12 @@ package com.jsalvar.barbilling.entity;
 import com.jsalvar.barbilling.entity.enums.TableStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Data
 @Table(name = "tables")
+@SQLRestriction("active = true")
 public class BarTable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -21,5 +23,8 @@ public class BarTable {
     @Enumerated(EnumType.STRING)
     @Column(name = "table_status")
     private TableStatus status = TableStatus.AVAILABLE; // default value
+
+    @Column(nullable = false)
+    private boolean active = true;
 
 }
