@@ -11,7 +11,8 @@ public interface BarTableService {
     List<BarTable> findAll();
     BarTable findById(String id);
     BarTable findByNumber(String number);
-    void changeStatus(String id, TableStatus tableStatus);
+    BarTable reserveTable(String id);
+    BarTable cancelReservation(String id);
     BarTable update(String id, BarTableUpdateRequestDto dto);
     BarTable create(BarTableCreateRequestDto dto);
     void delete(String id);

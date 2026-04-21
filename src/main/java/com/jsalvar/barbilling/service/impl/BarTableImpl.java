@@ -5,6 +5,7 @@ import com.jsalvar.barbilling.dto.request.BarTableCreateRequestDto;
 import com.jsalvar.barbilling.dto.request.BarTableUpdateRequestDto;
 import com.jsalvar.barbilling.entity.BarTable;
 import com.jsalvar.barbilling.entity.enums.TableStatus;
+import com.jsalvar.barbilling.exception.UnprocessableEntityException;
 import com.jsalvar.barbilling.repository.BarTableRepository;
 import com.jsalvar.barbilling.service.BarTableService;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,14 +39,35 @@ public class BarTableImpl implements BarTableService {
                 .orElseThrow(()-> new EntityNotFoundException("Table with given number not found"));
     }
 
+    // Helper method
+    @Transactional
+    private BarTable changeStatus(BarTable barTable, TableStatus tableStatus) {
+        // find by id is checked by specific methods.
+        barTable.setStatus(tableStatus);
+        return barTableRepository.save(barTable);
+    }
+
+    @Loggable
     @Override
     @Transactional
-    @Loggable
-    public void changeStatus(String id, TableStatus tableStatus) {
-        // Retrieve table
+    public BarTable reserveTable(String id){
         BarTable barTable = findById(id); // The service method already handles the error throw if not found.
-        barTable.setStatus(tableStatus);
-        barTableRepository.save(barTable);
+        if(!barTable.getStatus().equals(TableStatus.AVAILABLE)){
+            throw new UnprocessableEntityException("Error reserving table, table is not available");
+
+        }
+        return changeStatus(barTable, TableStatus.RESERVED);
+    }
+
+    @Loggable
+    @Override
+    @Transactional
+    public BarTable cancelReservation(String id){
+        BarTable barTable = findById(id); // check if exists
+        if(!barTable.getStatus().equals(TableStatus.RESERVED)){
+            throw new UnprocessableEntityException("Error canceling table reservation, table is not reserved");
+        }
+        return changeStatus(barTable, TableStatus.AVAILABLE);
     }
 
     @Override
@@ -68,7 +90,7 @@ public class BarTableImpl implements BarTableService {
         BarTable barTable = new BarTable();
         barTable.setCapacity(dto.capacity());
         barTable.setNumber(dto.number());
-        return barTable;
+        return barTableRepository.save(barTable);
     }
 
     @Override
