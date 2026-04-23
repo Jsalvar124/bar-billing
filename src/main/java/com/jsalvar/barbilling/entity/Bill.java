@@ -3,7 +3,10 @@ package com.jsalvar.barbilling.entity;
 import com.jsalvar.barbilling.entity.enums.PaymentMethod;
 import com.jsalvar.barbilling.entity.enums.PaymentStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -11,6 +14,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "bills")
 public class Bill {
     @Id

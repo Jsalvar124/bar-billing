@@ -5,6 +5,7 @@ import com.jsalvar.barbilling.dto.request.BarTableCreateRequestDto;
 import com.jsalvar.barbilling.dto.request.BarTableUpdateRequestDto;
 import com.jsalvar.barbilling.entity.BarTable;
 import com.jsalvar.barbilling.entity.enums.TableStatus;
+import com.jsalvar.barbilling.exception.ResourceNotFoundException;
 import com.jsalvar.barbilling.exception.UnprocessableEntityException;
 import com.jsalvar.barbilling.repository.BarTableRepository;
 import com.jsalvar.barbilling.service.BarTableService;
@@ -22,26 +23,30 @@ public class BarTableImpl implements BarTableService {
         this.barTableRepository = barTableRepository;
     }
 
+    @Loggable
     @Override
     public List<BarTable> findAll() {
         return barTableRepository.findAll();
     }
 
+    @Loggable
     @Override
     public BarTable findById(String id) {
         return barTableRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Table with given id not found"));
+                .orElseThrow(()-> new ResourceNotFoundException("Table with id "+id +" not found"));
     }
 
+    @Loggable
     @Override
     public BarTable findByNumber(String number) {
         return barTableRepository.findByNumber(number)
-                .orElseThrow(()-> new EntityNotFoundException("Table with given number not found"));
+                .orElseThrow(()-> new ResourceNotFoundException("Table with number "+number+" not found"));
     }
 
-    // Helper method
+    @Loggable
+    @Override
     @Transactional
-    private BarTable changeStatus(BarTable barTable, TableStatus tableStatus) {
+    public BarTable changeStatus(BarTable barTable, TableStatus tableStatus) {
         // find by id is checked by specific methods.
         barTable.setStatus(tableStatus);
         return barTableRepository.save(barTable);
@@ -70,6 +75,7 @@ public class BarTableImpl implements BarTableService {
         return changeStatus(barTable, TableStatus.AVAILABLE);
     }
 
+    @Loggable
     @Override
     @Transactional
     public BarTable update(String id, BarTableUpdateRequestDto dto) {
@@ -84,6 +90,7 @@ public class BarTableImpl implements BarTableService {
         return barTableRepository.save(barTable);
     }
 
+    @Loggable
     @Override
     @Transactional
     public BarTable create(BarTableCreateRequestDto dto) {
@@ -94,6 +101,7 @@ public class BarTableImpl implements BarTableService {
     }
 
     // Soft delete
+    @Loggable
     @Override
     @Transactional
     public void delete(String id) {

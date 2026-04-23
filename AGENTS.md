@@ -35,6 +35,43 @@
 ./mvnw.cmd test -Dsurefire.useFile=false
 ```
 
+### Test Folder Structure
+
+```
+src/test/java/com/jsalvar/barbilling/
+├── user/
+│   ├── UserServiceImplTest.java
+│   └── UserControllerTest.java
+└── auth/
+    ├── AuthServiceImplTest.java
+    └── AuthControllerTest.java
+```
+
+## Configuration
+
+### API Version Prefix
+
+The API version is configured via `server.servlet.context-path` in `application.properties`:
+
+```properties
+server.servlet.context-path=/api/v1
+```
+
+All endpoints automatically receive the `/api/v1` prefix. The context path is stripped before passing to Spring Security, so the security matcher still uses `/auth/**`.
+
+### Test Configuration
+
+```properties
+# src/test/resources/application.properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=create-drop
+jwt.secret=VGhpc0lzQVNlY3VyZUtleUZvckpXVFRoYXRNZWV0czI1NkJpdHMhIQ==
+jwt.expirationSeconds=8640000
+```
+
 ## Code Style Guidelines
 
 ### Package Structure
@@ -75,7 +112,8 @@ public record UserResponseDto(
         String name,
         String lastname,
         String email,
-        Role role
+        Role role,
+        boolean active
 ) {}
 ```
 
@@ -105,7 +143,7 @@ public class UserImpl implements UserDetails {
 
 | Entity | Description | Key Fields |
 |--------|-------------|------------|
-| `UserImpl` | User authentication | id, name, lastname, email, password, role |
+| `UserImpl` | User authentication | id, name, lastname, email, password, role, active |
 | `Category` | Product categories | id, name, kitchenType, taxRates |
 | `Product` | Menu items | id, name, description, price, available, category |
 | `BarTable` | Restaurant tables | id, number, capacity, status |
@@ -135,7 +173,7 @@ public class UserImpl implements UserDetails {
 
 ```java
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -150,6 +188,8 @@ public class UserController {
     }
 }
 ```
+
+**Note:** The `/api/v1` prefix is added via `server.servlet.context-path` in `application.properties`, not in the controller.
 
 ### Services
 
@@ -197,6 +237,25 @@ public class GlobalExceptionHandler {
 - Public endpoints under `/auth/**`
 - All other endpoints require authentication
 - Passwords encrypted with BCrypt
+- Use `@EnableMethodSecurity` for method-level role checks
+- Use `@PreAuthorize("hasRole('ADMIN')")` for role-based access control
+
+```java
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfig { ... }
+```
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+@PostMapping
+public ResponseEntity<UserResponseDto> create(...) { ... }
+
+@PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
+@PatchMapping("/{id}/password")
+public ResponseEntity<Void> changePassword(...) { ... }
+```
 
 ### Logging
 
@@ -234,28 +293,33 @@ Order imports:
 - `POST /auth/login` - Login (returns JWT token)
 
 ### Users (requires JWT)
-- `GET /api/v1/users` - Get all users
-- `GET /api/v1/users/{id}` - Get user by ID
+- `GET /users` - Get all users (ADMIN only)
+- `GET /users/{id}` - Get user by ID (ADMIN only)
+- `GET /users/me` - Get current user profile
+- `POST /users` - Create user (ADMIN only)
+- `PUT /users/{id}` - Update user (ADMIN only)
+- `DELETE /users/{id}` - Soft delete user (ADMIN only)
+- `PATCH /users/{id}/password` - Change password (USER_OWNS or ADMIN)
 
 ### Categories (requires JWT)
-- `GET /api/v1/categories` - Get all categories
-- `GET /api/v1/categories/{id}` - Get category by ID
+- `GET /categories` - Get all categories
+- `GET /categories/{id}` - Get category by ID
 
 ### Products (requires JWT)
-- `GET /api/v1/products` - Get all products
-- `GET /api/v1/products/{id}` - Get product by ID
+- `GET /products` - Get all products
+- `GET /products/{id}` - Get product by ID
 
 ### Tables (requires JWT)
-- `GET /api/v1/tables` - Get all tables
-- `GET /api/v1/tables/{id}` - Get table by ID
+- `GET /tables` - Get all tables
+- `GET /tables/{id}` - Get table by ID
 
 ### Tabs (requires JWT)
-- `GET /api/v1/tabs` - Get all tabs
-- `GET /api/v1/tabs/{id}` - Get tab by ID
+- `GET /tabs` - Get all tabs
+- `GET /tabs/{id}` - Get tab by ID
 
 ### Bills (requires JWT)
-- `GET /api/v1/bills` - Get all bills
-- `GET /api/v1/bills/{id}` - Get bill by ID
+- `GET /bills` - Get all bills
+- `GET /bills/{id}` - Get bill by ID
 
 ## Database
 

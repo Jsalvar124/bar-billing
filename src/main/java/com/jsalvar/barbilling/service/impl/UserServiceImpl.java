@@ -33,13 +33,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserImpl findById(String id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with id "+id+" not found"));
     }
 
     @Override
     public UserImpl findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with email "+email+" not found"));
     }
 
     @Override

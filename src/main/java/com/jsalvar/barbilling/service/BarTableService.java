@@ -13,6 +13,7 @@ public interface BarTableService {
     BarTable findByNumber(String number);
     BarTable reserveTable(String id);
     BarTable cancelReservation(String id);
+    BarTable changeStatus(BarTable barTable, TableStatus tableStatus);
     BarTable update(String id, BarTableUpdateRequestDto dto);
     BarTable create(BarTableCreateRequestDto dto);
     void delete(String id);

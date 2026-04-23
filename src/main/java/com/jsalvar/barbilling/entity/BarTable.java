@@ -2,11 +2,17 @@ package com.jsalvar.barbilling.entity;
 
 import com.jsalvar.barbilling.entity.enums.TableStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tables")
 @SQLRestriction("active = true")
 public class BarTable {
