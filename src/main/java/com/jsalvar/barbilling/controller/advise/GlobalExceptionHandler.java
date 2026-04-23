@@ -1,6 +1,7 @@
 package com.jsalvar.barbilling.controller.advise;
 
 import com.jsalvar.barbilling.dto.response.ErrorResponseDto;
+import com.jsalvar.barbilling.exception.ResourceNotFoundException;
 import com.jsalvar.barbilling.exception.UnprocessableEntityException;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -53,6 +54,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleEntityNotFound(EntityNotFoundException ex) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleResourceNotFound(ResourceNotFoundException ex) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex);
     }
 }

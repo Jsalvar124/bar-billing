@@ -43,6 +43,11 @@ public class TabServiceImpl implements TabService {
             throw new UnprocessableEntityException("Selected user is not a waiter");
         }
         BarTable table = barTableService.findById(dto.tableId());
+        // Check if table is not occupied
+        if (!table.getStatus().equals(TableStatus.AVAILABLE)) {
+            throw new UnprocessableEntityException("Table is not available");
+        }
+
 
         Tab tab = Tab.builder()
                 .status(TabStatus.OPEN)
@@ -65,6 +70,21 @@ public class TabServiceImpl implements TabService {
         }
         tab.setStatus(TabStatus.CLOSED);
         tab.setClosedAt(LocalDateTime.now()); // add close timestamp
+        return tabRepository.save(tab);
+    }
+
+    @Override
+    @Transactional
+    public Tab cancelTab(String id) {
+        Tab tab = tabRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Tab not found"));
+        if(!tab.getStatus().equals(TabStatus.OPEN)){
+            throw new UnprocessableEntityException("Only Open tabs can be cancelled");
+        }
+        BarTable table = tab.getTable();
+        barTableService.changeStatus(table, TableStatus.AVAILABLE); // Change table status
+        tab.setStatus(TabStatus.CANCELED);
+        tab.setClosedAt(LocalDateTime.now()); // add close timestamp
+
         return tabRepository.save(tab);
     }
 

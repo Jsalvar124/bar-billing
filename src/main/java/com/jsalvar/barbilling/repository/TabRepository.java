@@ -13,14 +13,14 @@ import java.util.List;
 public interface TabRepository extends JpaRepository<Tab, String> {
     List<Tab> findByStatus(TabStatus status);
 
-    @Query("""
-        SELECT t FROM Tab t
-        WHERE (:tableId IS NULL OR t.barTable.id = :tableId)
-        AND (:waiterId IS NULL OR t.waiter.id = :waiterId)
-        AND (:status IS NULL OR t.status = :status)
-        AND (CAST(:from AS date) IS NULL OR t.openedAt >= :from)
-        AND (CAST(:to AS date) IS NULL OR t.openedAt <= :to)
-    """)
+    @Query(value = """
+        SELECT * FROM tabs t
+        WHERE (:tableId IS NULL OR t.table_id = CAST(:tableId AS varchar))
+        AND (:waiterId IS NULL OR t.user_id = CAST(:waiterId AS varchar))
+        AND (CAST(:status AS varchar) IS NULL OR t.tab_status = :status)
+        AND (CAST(:from AS date) IS NULL OR t.opened_at >= CAST(:from AS date))
+        AND (CAST(:to AS date) IS NULL OR t.opened_at <= CAST(:to AS date))
+    """, nativeQuery = true)
     List<Tab> searchTab(
             @Param("tableId") String tableId,
             @Param("waiterId") String waiterId,

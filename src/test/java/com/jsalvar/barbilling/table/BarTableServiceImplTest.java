@@ -4,10 +4,9 @@ import com.jsalvar.barbilling.dto.request.BarTableCreateRequestDto;
 import com.jsalvar.barbilling.dto.request.BarTableUpdateRequestDto;
 import com.jsalvar.barbilling.entity.BarTable;
 import com.jsalvar.barbilling.entity.enums.TableStatus;
+import com.jsalvar.barbilling.exception.ResourceNotFoundException;
 import com.jsalvar.barbilling.exception.UnprocessableEntityException;
 import com.jsalvar.barbilling.repository.BarTableRepository;
-import com.jsalvar.barbilling.service.BarTableService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -76,7 +75,7 @@ class BarTableServiceImplTest {
     void findById_NotFound() {
         when(barTableRepository.findById("unknown-id")).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> barTableService.findById("unknown-id"));
+        assertThrows(ResourceNotFoundException.class, () -> barTableService.findById("unknown-id"));
     }
 
     @Test
@@ -93,7 +92,7 @@ class BarTableServiceImplTest {
     void findByNumber_NotFound() {
         when(barTableRepository.findByNumber("999")).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> barTableService.findByNumber("999"));
+        assertThrows(ResourceNotFoundException.class, () -> barTableService.findByNumber("999"));
     }
 
     @Test
@@ -130,7 +129,7 @@ class BarTableServiceImplTest {
         BarTableUpdateRequestDto dto = new BarTableUpdateRequestDto("unknown-id", "2", 6);
         when(barTableRepository.findById("unknown-id")).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> barTableService.update("unknown-id", dto));
+        assertThrows(ResourceNotFoundException.class, () -> barTableService.update("unknown-id", dto));
     }
 
     @Test
