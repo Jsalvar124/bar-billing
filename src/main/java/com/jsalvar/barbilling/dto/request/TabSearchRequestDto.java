@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record TabSearchRequestDto(
         String tableId,
         String waiterId,
-        TabStatus status,
+        String status,
         LocalDate from,
         LocalDate to
 ) {

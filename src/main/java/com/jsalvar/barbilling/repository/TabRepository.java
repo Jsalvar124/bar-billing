@@ -17,14 +17,14 @@ public interface TabRepository extends JpaRepository<Tab, String> {
         SELECT * FROM tabs t
         WHERE (:tableId IS NULL OR t.table_id = CAST(:tableId AS varchar))
         AND (:waiterId IS NULL OR t.user_id = CAST(:waiterId AS varchar))
-        AND (CAST(:status AS varchar) IS NULL OR t.tab_status = CAST(:status AS varchar))
+        AND (:status IS NULL OR t.tab_status = :status)
         AND (CAST(:from AS date) IS NULL OR t.opened_at >= CAST(:from AS date))
         AND (CAST(:to AS date) IS NULL OR t.opened_at <= CAST(:to AS date))
     """, nativeQuery = true)
     List<Tab> searchTab(
             @Param("tableId") String tableId,
             @Param("waiterId") String waiterId,
-            @Param("status") TabStatus status,
+            @Param("status") String status,
             @Param("from") LocalDate from,
             @Param("to") LocalDate to
     );
