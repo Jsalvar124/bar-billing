@@ -117,15 +117,10 @@ class TaxRateServiceImplTest {
     }
 
     @Test
-    void create_RateZero() {
+    void create_InvalidRate_Zero() {
         TaxRateCreateRequestDto dto = new TaxRateCreateRequestDto("Zero Tax", new BigDecimal("0"));
-        when(taxRateRepository.existsByName("Zero Tax")).thenReturn(false);
-        when(taxRateRepository.save(any(TaxRate.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        TaxRate result = taxRateService.create(dto);
-
-        assertNotNull(result);
-        assertEquals(BigDecimal.ZERO, result.getRate());
+        assertThrows(IllegalArgumentException.class, () -> taxRateService.create(dto));
     }
 
     @Test
