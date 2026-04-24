@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -20,8 +20,10 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Column(nullable = false, unique = true)
     private String name;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "kitchen_type")
     private KitchenType kitchenType;
 
     @ManyToMany
@@ -30,5 +32,6 @@ public class Category {
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "tax_rate_id")
     )
-    private List<TaxRate> taxRates = new ArrayList<>();
+    @Builder.Default
+    private Set<TaxRate> taxRates = new HashSet<>();
 }
