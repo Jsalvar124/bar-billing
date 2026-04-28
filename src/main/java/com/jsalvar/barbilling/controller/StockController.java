@@ -29,7 +29,10 @@ public class StockController {
 
     private StockResponseDto toDto(Stock stock){
         return new StockResponseDto(
-                stock.
+                stock.getProduct().getId(),
+                stock.getProduct().getName(),
+                stock.getQuantity(),
+                stock.getLowStockThreshold()
         );
     }
 
