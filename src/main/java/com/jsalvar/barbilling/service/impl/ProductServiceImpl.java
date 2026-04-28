@@ -52,9 +52,10 @@ public class ProductServiceImpl implements ProductService {
                 .category(category)
                 .build();
 
+        Product saved = productRepository.save(product);
         Stock stock = stockService.initializeStock(product);
 
-        return productRepository.save(product);
+        return saved;
     }
 
     @Override

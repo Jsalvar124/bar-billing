@@ -9,6 +9,7 @@ import com.jsalvar.barbilling.exception.ResourceNotFoundException;
 import com.jsalvar.barbilling.exception.UnprocessableEntityException;
 import com.jsalvar.barbilling.repository.ProductRepository;
 import com.jsalvar.barbilling.service.CategoryService;
+import com.jsalvar.barbilling.service.StockService;
 import com.jsalvar.barbilling.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,9 @@ class ProductServiceImplTest {
 
     @Mock
     private CategoryService categoryService;
+
+    @Mock
+    private StockService stockService;
 
     @InjectMocks
     private ProductServiceImpl productService;
@@ -100,6 +104,7 @@ class ProductServiceImplTest {
             product.setId("new-product-id");
             return product;
         });
+        when(stockService.initializeStock(any(Product.class))).thenReturn(null);
 
         Product result = productService.create(dto);
 

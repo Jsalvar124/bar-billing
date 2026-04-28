@@ -54,9 +54,12 @@ src/test/java/com/jsalvar/barbilling/
 ├── taxrate/
 │   ├── TaxRateServiceImplTest.java
 │   └── TaxRateControllerTest.java
-└── product/
-    ├── ProductServiceImplTest.java
-    └── ProductControllerTest.java
+├── product/
+│   ├── ProductServiceImplTest.java
+│   └── ProductControllerTest.java
+└── stock/
+    ├── StockServiceImplTest.java
+    └── StockControllerTest.java
 ```
 
 ## Configuration
@@ -336,6 +339,12 @@ Order imports:
 - `POST /products` - Create product (ADMIN only)
 - `PUT /products/{id}` - Update product (ADMIN only)
 - `DELETE /products/{id}` - Soft delete product (ADMIN only)
+
+### Stocks (requires JWT, ADMIN only)
+- `GET /stocks/product/{productId}` - Get stock by product ID
+- `GET /stocks/low-stock` - Get all low stock items
+- `PATCH /stocks/product/{productId}/low-threshold` - Update low stock threshold
+- `PATCH /stocks/product/{productId}/refill` - Refill stock quantity
 
 ### Tables (requires JWT)
 - `GET /tables` - Get all tables
