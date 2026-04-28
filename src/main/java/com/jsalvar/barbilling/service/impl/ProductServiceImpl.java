@@ -4,11 +4,13 @@ import com.jsalvar.barbilling.dto.request.ProductCreateRequestDto;
 import com.jsalvar.barbilling.dto.request.ProductUpdateRecordDto;
 import com.jsalvar.barbilling.entity.Category;
 import com.jsalvar.barbilling.entity.Product;
+import com.jsalvar.barbilling.entity.Stock;
 import com.jsalvar.barbilling.exception.ResourceNotFoundException;
 import com.jsalvar.barbilling.exception.UnprocessableEntityException;
 import com.jsalvar.barbilling.repository.ProductRepository;
 import com.jsalvar.barbilling.service.CategoryService;
 import com.jsalvar.barbilling.service.ProductService;
+import com.jsalvar.barbilling.service.StockService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +20,12 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
+    private final StockService stockService;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, StockService stockService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
+        this.stockService = stockService;
     }
 
     @Override
@@ -47,6 +51,8 @@ public class ProductServiceImpl implements ProductService {
                 .price(dto.price())
                 .category(category)
                 .build();
+
+        Stock stock = stockService.initializeStock(product);
 
         return productRepository.save(product);
     }
