@@ -7,7 +7,8 @@ import com.jsalvar.barbilling.entity.TaxRate;
 import com.jsalvar.barbilling.entity.enums.KitchenType;
 import com.jsalvar.barbilling.repository.CategoryRepository;
 import com.jsalvar.barbilling.repository.ProductRepository;
-import com.jsalvar.barbilling.repository.TaxRateRepository;
+import com.jsalvar.barbilling.service.CategoryService;
+import com.jsalvar.barbilling.service.TaxRateService;
 import com.jsalvar.barbilling.service.impl.CategoryServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ class CategoryServiceImplTest {
     private CategoryRepository categoryRepository;
 
     @Mock
-    private TaxRateRepository taxRateRepository;
+    private TaxRateService taxRateService;
 
     @Mock
     private ProductRepository productRepository;
@@ -169,7 +170,7 @@ class CategoryServiceImplTest {
     @Test
     void addTaxRate_Success() {
         when(categoryRepository.findById("category-id-123")).thenReturn(Optional.of(testCategory));
-        when(taxRateRepository.findById("tax-rate-id-123")).thenReturn(Optional.of(testTaxRate));
+        when(taxRateService.findById("tax-rate-id-123")).thenReturn(testTaxRate);
         when(categoryRepository.save(any(Category.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Category result = categoryService.addTaxRate("category-id-123", "tax-rate-id-123");
@@ -181,7 +182,7 @@ class CategoryServiceImplTest {
     void addTaxRate_AlreadyExists() {
         testCategory.getTaxRates().add(testTaxRate);
         when(categoryRepository.findById("category-id-123")).thenReturn(Optional.of(testCategory));
-        when(taxRateRepository.findById("tax-rate-id-123")).thenReturn(Optional.of(testTaxRate));
+        when(taxRateService.findById("tax-rate-id-123")).thenReturn(testTaxRate);
 
         assertThrows(IllegalArgumentException.class, 
                 () -> categoryService.addTaxRate("category-id-123", "tax-rate-id-123"));
@@ -191,7 +192,7 @@ class CategoryServiceImplTest {
     void removeTaxRate_Success() {
         testCategory.getTaxRates().add(testTaxRate);
         when(categoryRepository.findById("category-id-123")).thenReturn(Optional.of(testCategory));
-        when(taxRateRepository.findById("tax-rate-id-123")).thenReturn(Optional.of(testTaxRate));
+        when(taxRateService.findById("tax-rate-id-123")).thenReturn(testTaxRate);
         when(categoryRepository.save(any(Category.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Category result = categoryService.removeTaxRate("category-id-123", "tax-rate-id-123");
@@ -202,7 +203,7 @@ class CategoryServiceImplTest {
     @Test
     void removeTaxRate_NotFound() {
         when(categoryRepository.findById("category-id-123")).thenReturn(Optional.of(testCategory));
-        when(taxRateRepository.findById("tax-rate-id-123")).thenReturn(Optional.of(testTaxRate));
+        when(taxRateService.findById("tax-rate-id-123")).thenReturn(testTaxRate);
 
         assertThrows(IllegalArgumentException.class, 
                 () -> categoryService.removeTaxRate("category-id-123", "tax-rate-id-123"));

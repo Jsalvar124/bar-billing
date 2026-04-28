@@ -42,9 +42,21 @@ src/test/java/com/jsalvar/barbilling/
 ├── user/
 │   ├── UserServiceImplTest.java
 │   └── UserControllerTest.java
-└── auth/
-    ├── AuthServiceImplTest.java
-    └── AuthControllerTest.java
+├── auth/
+│   ├── AuthServiceImplTest.java
+│   └── AuthControllerTest.java
+├── category/
+│   ├── CategoryServiceImplTest.java
+│   └── CategoryControllerTest.java
+├── table/
+│   ├── BarTableServiceImplTest.java
+│   └── BarTableControllerTest.java
+├── taxrate/
+│   ├── TaxRateServiceImplTest.java
+│   └── TaxRateControllerTest.java
+└── product/
+    ├── ProductServiceImplTest.java
+    └── ProductControllerTest.java
 ```
 
 ## Configuration
@@ -230,6 +242,19 @@ public class GlobalExceptionHandler {
 }
 ```
 
+**Exception Mappings:**
+
+| Exception | HTTP Status | Message |
+|-----------|-------------|---------|
+| `UnprocessableEntityException` | 422 | Exception message |
+| `BadCredentialsException` | 401 | "Invalid credentials" |
+| `IllegalArgumentException` | 409 | Exception message |
+| `UsernameNotFoundException` | 404 | Exception message |
+| `EntityNotFoundException` | 404 | Exception message |
+| `ResourceNotFoundException` | 404 | Exception message |
+| `MethodArgumentNotValidException` | 400 | Field-specific validation errors |
+| `DataIntegrityViolationException` | 409 | "A record with this value already exists" |
+
 ### Security
 
 - JWT-based authentication
@@ -308,6 +333,9 @@ Order imports:
 ### Products (requires JWT)
 - `GET /products` - Get all products
 - `GET /products/{id}` - Get product by ID
+- `POST /products` - Create product (ADMIN only)
+- `PUT /products/{id}` - Update product (ADMIN only)
+- `DELETE /products/{id}` - Soft delete product (ADMIN only)
 
 ### Tables (requires JWT)
 - `GET /tables` - Get all tables
