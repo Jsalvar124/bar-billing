@@ -8,6 +8,8 @@ import com.jsalvar.barbilling.repository.CategoryRepository;
 import com.jsalvar.barbilling.repository.ProductRepository;
 import com.jsalvar.barbilling.repository.TaxRateRepository;
 import com.jsalvar.barbilling.service.CategoryService;
+import com.jsalvar.barbilling.service.ProductService;
+import com.jsalvar.barbilling.service.TaxRateService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +19,12 @@ import java.util.List;
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
-    private final TaxRateRepository taxRateRepository;
+    private final TaxRateService taxRateService;
     private final ProductRepository productRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, 
-                                TaxRateRepository taxRateRepository,
-                                ProductRepository productRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, TaxRateService taxRateService, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
-        this.taxRateRepository = taxRateRepository;
+        this.taxRateService = taxRateService;
         this.productRepository = productRepository;
     }
 
@@ -90,8 +90,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category addTaxRate(String categoryId, String taxRateId) {
         Category category = findById(categoryId);
-        TaxRate taxRate = taxRateRepository.findById(taxRateId)
-                .orElseThrow(() -> new EntityNotFoundException("Tax rate not found"));
+        TaxRate taxRate = taxRateService.findById(taxRateId); // error handled by service.
 
         if (category.getTaxRates().contains(taxRate)) {
             throw new IllegalArgumentException("Tax rate already added to category");
@@ -105,8 +104,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category removeTaxRate(String categoryId, String taxRateId) {
         Category category = findById(categoryId);
-        TaxRate taxRate = taxRateRepository.findById(taxRateId)
-                .orElseThrow(() -> new EntityNotFoundException("Tax rate not found"));
+        TaxRate taxRate = taxRateService.findById(taxRateId);
 
         if (!category.getTaxRates().contains(taxRate)) {
             throw new IllegalArgumentException("Tax rate not found in category");
