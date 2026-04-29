@@ -57,9 +57,12 @@ src/test/java/com/jsalvar/barbilling/
 ├── product/
 │   ├── ProductServiceImplTest.java
 │   └── ProductControllerTest.java
-└── stock/
-    ├── StockServiceImplTest.java
-    └── StockControllerTest.java
+├── stock/
+│   ├── StockServiceImplTest.java
+│   └── StockControllerTest.java
+└── orderItem/
+    ├── OrderItemServiceImplTest.java
+    └── OrderItemControllerTest.java
 ```
 
 ## Configuration
@@ -349,6 +352,11 @@ Order imports:
 ### Tables (requires JWT)
 - `GET /tables` - Get all tables
 - `GET /tables/{id}` - Get table by ID
+
+### OrderItems (requires JWT)
+- `POST /order-items` - Create order item (ADMIN or WAITER)
+- `GET /order-items/tab/{tabId}` - Get order items by tab ID
+- `DELETE /order-items/{id}` - Delete order item (ADMIN or WAITER)
 
 ### Tabs (requires JWT)
 - `GET /tabs` - Get all tabs
