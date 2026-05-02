@@ -1,7 +1,7 @@
 package com.jsalvar.barbilling.entity;
 
 import com.jsalvar.barbilling.entity.enums.PaymentMethod;
-import com.jsalvar.barbilling.entity.enums.PaymentStatus;
+import com.jsalvar.barbilling.entity.enums.BillStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,20 +32,30 @@ public class Bill {
     private UserImpl cashier;
 
     @Column(nullable = false)
-    private BigDecimal total;
+    private BigDecimal subtotal;
+
+    @Column(nullable = false)
+    private BigDecimal tax;
 
     private BigDecimal tip;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentMethod paymentMethod;
+    private BigDecimal total;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus;
+    @Column(nullable = false)
+    private BillStatus billStatus = BillStatus.PENDING;;
 
     @Column(nullable = true)
     private LocalDateTime paidAt;
+
+    @Column(nullable = true)
+    private LocalDateTime cancelledAt;
+
+    @Column(nullable = true)
+    private String cancellationReason;
 }
