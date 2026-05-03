@@ -20,6 +20,12 @@ public class StockServiceImpl implements StockService {
     @Value("${barbilling.stock.max-threshold}")
     private int maxLowStockThreshold;
 
+    @Value("${barbilling.stock.initial-quantity}")
+    private int initialQuantity;
+
+    @Value("${barbilling.stock.initial-threshold}")
+    private int initialLowStockThreshold;
+
     private final StockRepository stockRepository;
 
     public StockServiceImpl(StockRepository stockRepository) {
@@ -54,8 +60,8 @@ public class StockServiceImpl implements StockService {
     public Stock initializeStock(Product product) {
         Stock stock = Stock.builder()
                 .product(product)
-                .quantity(0) // initialize in zero
-                .lowStockThreshold(10)  // initial low stock threshold
+                .quantity(initialQuantity) // initialize quantity stock
+                .lowStockThreshold(initialLowStockThreshold)  // initial low stock threshold
                 .build();
         return stockRepository.save(stock);
     }

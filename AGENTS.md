@@ -60,9 +60,12 @@ src/test/java/com/jsalvar/barbilling/
 ├── stock/
 │   ├── StockServiceImplTest.java
 │   └── StockControllerTest.java
-└── orderItem/
-    ├── OrderItemServiceImplTest.java
-    └── OrderItemControllerTest.java
+├── orderItem/
+│   ├── OrderItemServiceImplTest.java
+│   └── OrderItemControllerTest.java
+└── bill/
+    ├── BillServiceImplTest.java
+    └── BillControllerTest.java
 ```
 
 ## Configuration
@@ -363,8 +366,10 @@ Order imports:
 - `GET /tabs/{id}` - Get tab by ID
 
 ### Bills (requires JWT)
+- `POST /bills` - Create bill (CASHIER or ADMIN)
 - `GET /bills` - Get all bills
 - `GET /bills/{id}` - Get bill by ID
+- `PATCH /bills/{id}/cancel` - Cancel bill (CASHIER or ADMIN)
 
 ## Database
 

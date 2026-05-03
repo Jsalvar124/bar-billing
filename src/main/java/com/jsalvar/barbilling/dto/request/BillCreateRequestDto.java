@@ -12,7 +12,7 @@ public record BillCreateRequestDto(
         String tabId,
         @NotBlank(message = "Cashier id is required")
         String cashierId,
-        @NotBlank(message = "Tip value is required")
+        @NotNull(message = "Tip value is required")
         @DecimalMin(value = "0.0")
         @DecimalMax(value = "1.0") // max 100% tip
         BigDecimal tip

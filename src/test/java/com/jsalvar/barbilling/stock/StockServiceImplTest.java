@@ -38,6 +38,8 @@ class StockServiceImplTest {
     void setUp() {
         ReflectionTestUtils.setField(stockService, "maxRefillQuantity", 100);
         ReflectionTestUtils.setField(stockService, "maxLowStockThreshold", 100);
+        ReflectionTestUtils.setField(stockService, "initialQuantity", 50);
+        ReflectionTestUtils.setField(stockService, "initialLowStockThreshold", 10);
 
         testProduct = Product.builder()
                 .id("product-id-123")
@@ -121,7 +123,7 @@ class StockServiceImplTest {
         Stock result = stockService.initializeStock(testProduct);
 
         assertNotNull(result);
-        assertEquals(0, result.getQuantity());
+        assertEquals(50, result.getQuantity());
         assertEquals(10, result.getLowStockThreshold());
     }
 

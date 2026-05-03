@@ -48,7 +48,7 @@ public class Bill {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private BillStatus billStatus = BillStatus.PENDING;;
+    private BillStatus billStatus = BillStatus.PENDING;
 
     @Column(nullable = true)
     private LocalDateTime paidAt;
