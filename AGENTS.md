@@ -63,9 +63,12 @@ src/test/java/com/jsalvar/barbilling/
 ├── orderItem/
 │   ├── OrderItemServiceImplTest.java
 │   └── OrderItemControllerTest.java
-└── bill/
-    ├── BillServiceImplTest.java
-    └── BillControllerTest.java
+├── bill/
+│   ├── BillServiceImplTest.java
+│   └── BillControllerTest.java
+└── payment/
+    ├── PaymentServiceImplTest.java
+    └── PaymentControllerTest.java
 ```
 
 ## Configuration
@@ -170,7 +173,9 @@ public class UserImpl implements UserDetails {
 | `BarTable` | Restaurant tables | id, number, capacity, status |
 | `Tab` | Open orders per table | id, table, waiter, status, openedAt, closedAt |
 | `OrderItem` | Items in a tab | id, quantity, unitPrice, notes, product, tab |
+| `BillItem` | Bill line items | id, bill, productName, unitPrice, quantity, subtotal, tax, total |
 | `Bill` | Payment records | id, tab, cashier, total, tip, paymentMethod, paymentStatus, paidAt |
+| `Payment` | Payment attempts | id, bill, amount, paymentMethod, paymentStatus, confirmationToken, failureReason, attemptedAt, resolvedAt |
 | `Stock` | Inventory tracking | id, product, quantity, lowStockThreshold |
 | `TaxRate` | Tax percentages | id, name, rate |
 
@@ -183,7 +188,9 @@ public class UserImpl implements UserDetails {
 | `TableStatus` | FREE, OCCUPIED, RESERVED |
 | `TabStatus` | OPEN, CLOSED, CANCELLED |
 | `PaymentMethod` | CASH, CARD, TRANSFER |
-| `PaymentStatus` | PENDING, PAID, CANCELLED |
+| `PaymentStatus` | PENDING, APPROVED, DECLINED |
+| `BillStatus` | PENDING, PAID, CANCELLED |
+| `Currency` | COP, USD |
 
 ### Controllers
 
@@ -370,6 +377,14 @@ Order imports:
 - `GET /bills` - Get all bills
 - `GET /bills/{id}` - Get bill by ID
 - `PATCH /bills/{id}/cancel` - Cancel bill (CASHIER or ADMIN)
+
+### Payments (requires JWT)
+- `POST /payments` - Attempt payment (CASHIER or ADMIN)
+- `GET /payments` - Get all payments (CASHIER or ADMIN)
+- `GET /payments/{id}` - Get payment by ID (CASHIER or ADMIN)
+- `GET /payments/bill/{billId}` - Get payments by bill ID (CASHIER or ADMIN)
+- `PATCH /payments/{id}/approve` - Approve payment (CASHIER or ADMIN)
+- `PATCH /payments/{id}/decline` - Decline payment (CASHIER or ADMIN)
 
 ## Database
 
