@@ -34,9 +34,10 @@ public class Payment {
     @Column(nullable = false)
     private PaymentMethod paymentMethod;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentStatus paymentStatus;
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
     private String confirmationToken; // nullable, card payments only
 

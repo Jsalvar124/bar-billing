@@ -8,8 +8,6 @@ import com.jsalvar.barbilling.entity.Bill;
 import com.jsalvar.barbilling.entity.Tab;
 import com.jsalvar.barbilling.entity.UserImpl;
 import com.jsalvar.barbilling.entity.BarTable;
-import com.jsalvar.barbilling.entity.enums.BillStatus;
-import com.jsalvar.barbilling.entity.enums.TabStatus;
 import com.jsalvar.barbilling.service.BillService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
