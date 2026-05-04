@@ -1,6 +1,7 @@
 package com.jsalvar.barbilling.dto.response;
 
 import com.jsalvar.barbilling.entity.enums.BillStatus;
+import com.jsalvar.barbilling.entity.enums.Currency;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ public record BillResponseDto(
         BigDecimal tax,
         BigDecimal tip,
         BigDecimal total,
+        Currency currency,
         BillStatus billStatus,
         LocalDateTime paidAt,
         LocalDateTime cancelledAt,
@@ -40,6 +42,7 @@ public record BillResponseDto(
             int quantity,
             BigDecimal subtotal,
             BigDecimal tax,
-            BigDecimal total
+            BigDecimal total,
+            Currency currency
     ) {}
 }

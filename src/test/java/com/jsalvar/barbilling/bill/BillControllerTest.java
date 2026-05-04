@@ -6,6 +6,7 @@ import com.jsalvar.barbilling.dto.request.BillCreateRequestDto;
 import com.jsalvar.barbilling.dto.response.BillResponseDto;
 import com.jsalvar.barbilling.entity.BarTable;
 import com.jsalvar.barbilling.entity.Bill;
+import com.jsalvar.barbilling.entity.BillItem;
 import com.jsalvar.barbilling.entity.Tab;
 import com.jsalvar.barbilling.entity.UserImpl;
 import com.jsalvar.barbilling.entity.enums.BillStatus;
@@ -84,16 +85,41 @@ class BillControllerTest {
                 .tip(new BigDecimal("3.00"))
                 .total(new BigDecimal("32.00"))
                 .billStatus(BillStatus.PENDING)
+                .items(List.of(
+                        BillItem.builder()
+                                .productName("Margarita")
+                                .unitPrice(new BigDecimal("12.50"))
+                                .quantity(2)
+                                .subtotal(new BigDecimal("25.00"))
+                                .tax(new BigDecimal("4.00"))
+                                .total(new BigDecimal("29.00"))
+                                .build()
+                ))
                 .build();
     }
 
     private BillResponseDto toDto(Bill bill) {
+        List<BillResponseDto.Item> items = bill.getItems() != null
+                ? bill.getItems().stream()
+                        .map(item -> new BillResponseDto.Item(
+                                item.getProductName(),
+                                item.getUnitPrice(),
+                                item.getQuantity(),
+                                item.getSubtotal(),
+                                item.getTax(),
+                                item.getTotal(),
+                                bill.getCurrency()
+                        ))
+                        .toList()
+                : List.of();
+
         return new BillResponseDto(
                 bill.getId(),
                 bill.getSubtotal(),
                 bill.getTax(),
                 bill.getTip(),
                 bill.getTotal(),
+                bill.getCurrency(),
                 bill.getBillStatus(),
                 bill.getPaidAt(),
                 bill.getCancelledAt(),
@@ -109,7 +135,8 @@ class BillControllerTest {
                         bill.getCashier().getId(),
                         bill.getCashier().getName(),
                         bill.getCashier().getLastname()
-                )
+                ),
+                items
         );
     }
 

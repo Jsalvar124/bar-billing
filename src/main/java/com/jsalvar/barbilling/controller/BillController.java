@@ -75,7 +75,8 @@ public class BillController {
                         item.getQuantity(),
                         item.getSubtotal(),
                         item.getTax(),
-                        item.getTotal()
+                        item.getTotal(),
+                        bill.getCurrency()
                 ))
                 .toList();
 
@@ -85,6 +86,7 @@ public class BillController {
                 bill.getTax(),
                 bill.getTip(),
                 bill.getTotal(),
+                bill.getCurrency(),
                 bill.getBillStatus(),
                 bill.getPaidAt(),
                 bill.getCancelledAt(),
