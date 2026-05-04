@@ -8,16 +8,20 @@ import com.jsalvar.barbilling.exception.ResourceNotFoundException;
 import com.jsalvar.barbilling.exception.UnprocessableEntityException;
 import com.jsalvar.barbilling.repository.BillRepository;
 import com.jsalvar.barbilling.service.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class BillServiceImpl implements BillService {
+    @Value("${barbilling.default-currency}")
+    private Currency defaultCurrency;
+
     private final BillRepository billRepository;
     private final TabService tabService;
     private final UserService userService;
@@ -50,24 +54,57 @@ public class BillServiceImpl implements BillService {
         if(!cashier.getRole().equals(Role.CASHIER) && !cashier.getRole().equals(Role.ADMIN)){
             throw new UnprocessableEntityException("Selected user is not a cashier");
         }
-        // Calculate subtotal
+        // Calculate amounts
         List<OrderItem> orderItems = orderItemService.findByTabId(tab.getId());
-        BigDecimal subtotal = calculateSubtotal(orderItems);
-        BigDecimal tax = calculateTax(orderItems);
-        BigDecimal total = calculateTotal(subtotal, tax, dto.tip());
 
+        BigDecimal subtotal = BigDecimal.ZERO;
+        BigDecimal tax = BigDecimal.ZERO;
+        List<BillItem> billItems = new ArrayList<>();
+
+        for(OrderItem item : orderItems) {
+            BigDecimal itemSubtotal = item.getUnitPrice()
+                    .multiply(BigDecimal.valueOf(item.getQuantity()));
+
+            BigDecimal itemTax = item.getProduct().getCategory().getTaxRates()
+                    .stream()
+                    .map(taxRate -> taxRate.getRate().multiply(itemSubtotal))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            // Bill Subtotal
+            subtotal = subtotal.add(itemSubtotal);
+            tax = tax.add(itemTax);
+
+            BillItem billItem = BillItem.builder()
+                    .productName(item.getProduct().getName())
+                    .unitPrice(item.getUnitPrice())
+                    .quantity(item.getQuantity())
+                    .subtotal(itemSubtotal)
+                    .tax(itemTax)
+                    .total(itemSubtotal.add(itemTax))
+                    .build();
+
+            billItems.add(billItem);
+        }
+        BigDecimal tip = subtotal.multiply(dto.tip());
+
+        BigDecimal total = subtotal.add(tax).add(tip);
 
         // timestamp is created by hibernate using @CreationTimestamp
         Bill bill = Bill.builder()
                 .tab(tab)
                 .cashier(cashier)
-                .tip(dto.tip())
+                .tip(tip)
                 .subtotal(subtotal)
                 .tax(tax)
                 .total(total)
+                .currency(defaultCurrency) //COP
                 .build();
 
-        return billRepository.save(bill);
+        Bill savedBill = billRepository.save(bill);
+
+        billItems.forEach(item -> item.setBill(savedBill)); // set bill reference
+        savedBill.setItems(billItems);
+        return billRepository.save(savedBill); // cascade saves bill items
     }
 
     @Override
@@ -114,36 +151,5 @@ public class BillServiceImpl implements BillService {
         bill.setPaidAt(LocalDateTime.now());
         barTableService.changeStatus(bill.getTab().getTable(), TableStatus.AVAILABLE);
         return billRepository.save(bill);
-    }
-
-    private BigDecimal calculateSubtotal(List<OrderItem> orderItems){
-        BigDecimal subtotal = BigDecimal.ZERO;
-        for (OrderItem item : orderItems) {
-            subtotal = subtotal.add(
-                    item.getUnitPrice()
-                            .multiply(BigDecimal.valueOf(item.getQuantity()))
-            );
-        }
-        return subtotal;
-    }
-
-    private BigDecimal calculateTax(List<OrderItem> orderItems){
-        BigDecimal tax = BigDecimal.ZERO;
-        for (OrderItem item : orderItems) {
-            // Each item may have multiple taxes
-            Set<TaxRate> taxRateList = item.getProduct().getCategory().getTaxRates(); // Here you may have N+1 problem, fixed with @EntityGraph
-
-            tax = tax.add (taxRateList.stream().map(taxRate -> taxRate.getRate()
-                    .multiply(item.getUnitPrice())
-                    .multiply(BigDecimal.valueOf(item.getQuantity())))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add)
-            );
-        }
-        return tax;
-    }
-
-    private BigDecimal calculateTotal(BigDecimal subtotal, BigDecimal tax, BigDecimal tip){
-        BigDecimal tipAmount = subtotal.multiply(tip);
-        return subtotal.add(tax).add(tipAmount);
     }
 }

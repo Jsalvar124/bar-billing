@@ -4,6 +4,7 @@ import com.jsalvar.barbilling.entity.enums.BillStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record BillResponseDto(
         String id,
@@ -16,7 +17,8 @@ public record BillResponseDto(
         LocalDateTime cancelledAt,
         String cancellationReason,
         TabInfo tab,
-        CashierInfo cashier
+        CashierInfo cashier,
+        List<Item> items
 ) {
     public record TabInfo(
             String id,
@@ -30,5 +32,14 @@ public record BillResponseDto(
             String id,
             String name,
             String lastname
+    ) {}
+
+    public record Item(
+            String productName,
+            BigDecimal unitPrice,
+            int quantity,
+            BigDecimal subtotal,
+            BigDecimal tax,
+            BigDecimal total
     ) {}
 }

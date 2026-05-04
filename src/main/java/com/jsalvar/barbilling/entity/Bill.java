@@ -1,7 +1,7 @@
 package com.jsalvar.barbilling.entity;
 
-import com.jsalvar.barbilling.entity.enums.PaymentMethod;
 import com.jsalvar.barbilling.entity.enums.BillStatus;
+import com.jsalvar.barbilling.entity.enums.Currency;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,6 +32,10 @@ public class Bill {
     @ManyToOne
     @JoinColumn(name = "cashier_id", nullable = false)
     private UserImpl cashier;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Currency currency;
 
     @Column(nullable = false)
     private BigDecimal subtotal;
@@ -58,4 +64,8 @@ public class Bill {
 
     @Column(nullable = true)
     private String cancellationReason;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
+    private List<BillItem> items = new ArrayList<>();
 }

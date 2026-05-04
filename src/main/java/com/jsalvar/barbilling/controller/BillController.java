@@ -68,6 +68,17 @@ public class BillController {
         UserImpl waiter = tab.getWaiter();
         UserImpl cashier = bill.getCashier();
 
+        List<BillResponseDto.Item> items = bill.getItems().stream()
+                .map(item -> new BillResponseDto.Item(
+                        item.getProductName(),
+                        item.getUnitPrice(),
+                        item.getQuantity(),
+                        item.getSubtotal(),
+                        item.getTax(),
+                        item.getTotal()
+                ))
+                .toList();
+
         return new BillResponseDto(
                 bill.getId(),
                 bill.getSubtotal(),
@@ -89,7 +100,8 @@ public class BillController {
                         cashier.getId(),
                         cashier.getName(),
                         cashier.getLastname()
-                )
+                ),
+                items
         );
     }
 }

@@ -14,11 +14,12 @@ public class LoggingAspect {
 
     @Around("@annotation(Loggable)") // ← pointcut — intercept @Loggable methods
     public Object log(ProceedingJoinPoint joinPoint) throws Throwable {
+        String className = joinPoint.getSignature().getDeclaringType().getSimpleName();
         String methodName = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
 
         // BEFORE
-        log.info("→ Calling: {} with args: {}", methodName, args);
+        log.info("→ Calling: {}.{} with args: {}",className, methodName, args);
         long start = System.currentTimeMillis();
 
         // THE METHOD
