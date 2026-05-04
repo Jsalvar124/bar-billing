@@ -278,7 +278,7 @@ class BillServiceImplTest {
     void confirmPayment_PaymentNotApproved() {
         Payment payment = Payment.builder()
                 .bill(testBill)
-                .paymentStatus(PaymentStatus.FAILED)
+                .paymentStatus(PaymentStatus.DECLINED)
                 .build();
 
         assertThrows(UnprocessableEntityException.class, () -> billService.confirmPayment(payment));

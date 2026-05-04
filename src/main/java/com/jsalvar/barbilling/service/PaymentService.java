@@ -11,5 +11,6 @@ public interface PaymentService {
     Payment approve(String id, PaymentApproveRequestDto dto); // PENDING → APPROVED
     Payment decline(String id, String reason);        // PENDING → DECLINED
     Payment findById(String id);
+    List<Payment> findAll();
     List<Payment> findByBillId(String billId);
 }

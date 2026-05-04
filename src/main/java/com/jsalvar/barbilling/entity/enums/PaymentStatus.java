@@ -3,6 +3,6 @@ package com.jsalvar.barbilling.entity.enums;
 public enum PaymentStatus {
     PENDING,
     APPROVED,
-    FAILED,
+    DECLINED,
     CANCELLED
 }
